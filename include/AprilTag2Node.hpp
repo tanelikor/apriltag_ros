@@ -7,6 +7,7 @@
 #include <geometry_msgs/msg/transform_stamped.hpp>
 #include <apriltag_msgs/msg/april_tag_detection.hpp>
 #include <apriltag_msgs/msg/april_tag_detection_array.hpp>
+#include <tf2_ros/transform_broadcaster.h>
 
 // apriltag
 #include <apriltag.h>
@@ -41,8 +42,8 @@ private:
 
     rclcpp::Subscription<sensor_msgs::msg::CompressedImage>::SharedPtr sub_img;
     rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr sub_info;
-    rclcpp::Publisher<geometry_msgs::msg::TransformStamped>::SharedPtr pub_pose;
     rclcpp::Publisher<apriltag_msgs::msg::AprilTagDetectionArray>::SharedPtr pub_detections;
+    std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster;
 
     void onImage(const sensor_msgs::msg::CompressedImage::SharedPtr msg_img);
 

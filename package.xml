@@ -13,6 +13,7 @@
   <depend>geometry_msgs</depend>
   <depend>apriltag_msgs</depend>
   <depend>apriltag</depend>
+  <depend>tf2_ros</depend>
 
   <export>
     <build_type>ament_cmake</build_type>

@@ -15,7 +15,6 @@ AprilTag2Node::AprilTag2Node() : Node("apriltag2", "apriltag", true) {
     sub_img = this->create_subscription<sensor_msgs::msg::CompressedImage>("image/compressed",
         std::bind(&AprilTag2Node::onImage, this, std::placeholders::_1),
         rmw_qos_profile_sensor_data);
-    pub_pose = this->create_publisher<geometry_msgs::msg::TransformStamped>("/tf");
     pub_detections = this->create_publisher<apriltag_msgs::msg::AprilTagDetectionArray>("detections");
 
     // get single camera info message
@@ -28,6 +27,8 @@ AprilTag2Node::AprilTag2Node() : Node("apriltag2", "apriltag", true) {
             sub_info.reset();
         }
     );
+
+    tf_broadcaster = std::make_unique<tf2_ros::TransformBroadcaster>(rclcpp::Node::SharedPtr(this));
 
     get_parameter_or<std::string>("family", tag_family, "36h11");
     get_parameter_or<double>("size", tag_edge_size, 2.0);
@@ -126,7 +127,7 @@ void AprilTag2Node::onImage(const sensor_msgs::msg::CompressedImage::SharedPtr m
         tf.child_frame_id = tracked_tags.size() ? tracked_tags.at(det->id) : std::string(det->family->name)+":"+std::to_string(det->id) ;
         getPose(*(det->H), tf.transform, z_up);
 
-        pub_pose->publish(tf);
+        tf_broadcaster->sendTransform(tf);
     }
 
     pub_detections->publish(msg_detections);
