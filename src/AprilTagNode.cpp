@@ -52,7 +52,7 @@ AprilTagNode::AprilTagNode(rclcpp::NodeOptions options)
     z_up(declare_parameter<bool>("z_up", false)),
     // topics
     sub_cam(image_transport::create_camera_subscription(this, "image", std::bind(&AprilTagNode::onCamera, this, std::placeholders::_1, std::placeholders::_2), declare_parameter<std::string>("image_transport", "raw"), rmw_qos_profile_sensor_data)),
-    pub_tf(create_publisher<tf2_msgs::msg::TFMessage>("/tf", rclcpp::QoS(100))),
+    pub_tf(create_publisher<tf2_msgs::msg::TFMessage>("tf", rclcpp::QoS(100))),
     pub_detections(create_publisher<apriltag_msgs::msg::AprilTagDetectionArray>("detections", rclcpp::QoS(1)))
 {
     td->quad_decimate = declare_parameter<float>("decimate", 1.0);
